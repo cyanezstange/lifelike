@@ -2,10 +2,11 @@ import numpy as np
 
 
 class Lifelike:
-    def __init__(self, x, y, t):
+    def __init__(self, x, y, t, rule = None):
         self.dim_x = x
         self.dim_y = y
         self.dim_t = t
+        self.rule  = rule
 
         self.T = np.arange(self.dim_t)
         self.X = np.arange(self.dim_x)
@@ -13,7 +14,13 @@ class Lifelike:
         self.U = np.zeros((self.dim_t, self.dim_x, self.dim_y))
 
     def add_being(self, being, x, y):
-        self.U[0][x:x + being.U.shape[0], y:y + being.U.shape[1]] = being.U
+        if self.rule == None:
+            self.rule = being.rule
+        elif self.rule == being.rule:
+            self.U[0][x:x + being.U.shape[0], y:y + being.U.shape[1]] = being.U
+        else:
+            #TODO Raise exception
+            print('Error: Rule mismatch.')
 
     def add_being_top_left(self, being):
         self.add_being(being, 2, 2)
