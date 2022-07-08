@@ -4,8 +4,8 @@ import re
 
 
 class Being:
-    def __init__(self, url):
-        self.url = url
+    def __init__(self, name):
+        self.name = name
 
         self.x = None
         self.y = None
@@ -19,7 +19,7 @@ class Being:
         self._rldecode()
 
     def _retrieve_data(self):
-        response = requests.get(self.url)
+        response = requests.get(f'https://www.conwaylife.com/patterns/{self.name}.rle')
 
         rlencoded = re.sub(
             r'(?m)^#.*\n?',
