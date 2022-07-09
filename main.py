@@ -1,7 +1,8 @@
 from lifelike import Lifelike
 
-if __name__ == '__main__':
-    life = Lifelike(8, 8)
-    life.add_being('glider', 'top_left')
+life = Lifelike(40, 40)
+life.add_being('lobster', 'bottom_right', offset=(-1,-1))
+for _ in range(20):
+    life.add_being('glider', (1,1))
     life.run(20)
-    life.viz()
+life.viz()

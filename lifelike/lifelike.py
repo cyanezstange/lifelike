@@ -41,9 +41,11 @@ class Lifelike:
         # Chack type: pos.
         # Definition of x and y.
         positions = {
-            'middle'   : ((self.dim_x - being.U.shape[0]) // 2,
-                          (self.dim_y - being.U.shape[1]) // 2),
-            'top_left' : (1, 1),
+            'top_left'     : (1, 1),
+            'middle'       : ((self.dim_x - being.U.shape[0]) // 2,
+                              (self.dim_y - being.U.shape[1]) // 2),
+            'bottom_right' : ((self.dim_x - being.U.shape[0]),
+                              (self.dim_y - being.U.shape[1])),
         }
         if isinstance(pos, tuple) and len(pos) == 2:
             x, y = pos
@@ -65,7 +67,10 @@ class Lifelike:
             self.rule = being.rule
 
         if self.rule == being.rule:
-            self.U_0[0][x:x + being.U.shape[0], y:y + being.U.shape[1]] = being.U
+            if self.dim_t == 0:
+                self.U_0[0][x:x + being.U.shape[0], y:y + being.U.shape[1]] = being.U
+            else:
+                self.U[-1][x:x + being.U.shape[0], y:y + being.U.shape[1]] = being.U
         else:
             #TODO Raise exception
             print('Error: Rule mismatch.')
@@ -96,7 +101,7 @@ class Lifelike:
             im.set_array(self.U[i])
             return [im]
 
-        anim = FuncAnimation(fig, animate, frames=len(self.T), interval=100)
+        anim = FuncAnimation(fig, animate, frames=len(self.U), interval=100)
 
         anim.save(filename)
 
