@@ -24,9 +24,17 @@ class Lifelike:
 
     def __repr__(self):
         if self.dim_t == 0:
-            return repr(self.U_0[0])
+            U_temp = self.U_0[0]
         else:
-            return repr(self.U[-1])
+            U_temp = self.U[-1]
+
+        out = ''
+        for row in U_temp:
+            for elem in row:
+                out += '@' if elem==1 else ' '
+            out += '\n'
+
+        return out
 
     def add_being(self, being, pos, offset=(0,0)):
         # Chack type: being.
