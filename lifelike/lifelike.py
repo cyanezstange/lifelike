@@ -1,4 +1,10 @@
 import numpy as np
+from lifelike import Being
+
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from matplotlib.colors import ListedColormap
 
 
 class Lifelike:
@@ -22,7 +28,39 @@ class Lifelike:
         else:
             return repr(self.U[-1])
 
-    def add_being(self, being, x, y):
+    def add_being(self, being, pos, offset=(0,0)):
+        # Chack type: being.
+        if isinstance(being, Being):
+            pass
+        elif isinstance(being, str):
+            being = Being(being)
+        else:
+            #TODO Raise exception.
+            print('Error: being not instance of Being nor str.')
+
+        # Chack type: pos.
+        # Definition of x and y.
+        positions = {
+            'middle'   : ((self.dim_x - being.U.shape[0]) // 2,
+                          (self.dim_y - being.U.shape[1]) // 2),
+            'top_left' : (1, 1),
+        }
+        if isinstance(pos, tuple) and len(pos) == 2:
+            x, y = pos
+        elif pos in positions:
+            x, y = positions[pos]
+        else:
+            #TODO Raise exception
+            print('Error: Bad position.')
+
+        # Check type offset.
+        if isinstance(offset, tuple) and len(offset) == 2:
+            x += offset[0]
+            y += offset[1]
+        else:
+            #TODO Raise exception
+            print('Error: Bad offset.')
+
         if self.rule == None:
             self.rule = being.rule
 
@@ -32,20 +70,35 @@ class Lifelike:
             #TODO Raise exception
             print('Error: Rule mismatch.')
 
-    def add_being_top_left(self, being):
-        self.add_being(being, 2, 2)
-
-    def add_being_middle(self, being):
-        self.add_being(being, (self.dim_x - being.U.shape[0]) // 2, (self.dim_y - being.U.shape[1]) // 2)
-
-    def add_being_bottom_right(self, being):
-        self.add_being(being, self.dim_x - being.U.shape[0] - 4, self.dim_y - being.U.shape[1] - 4)
-
-    def add_being_middle_bottom(self, being):
-        self.add_being(being, self.dim_x - being.U.shape[0] - 2, (self.dim_y - being.U.shape[1]) // 2)
-
     #def random(self):
     #    self.U[0] = np.random.choice([0, 1], (self.dim_x, self.dim_y))
+
+    def viz(self, filename='life.mp4'):
+        COLOR = 'black'
+
+        matplotlib.rcParams['axes.linewidth'] = 4
+
+        fig = plt.figure(figsize=(self.dim_x/4, self.dim_y/4))
+        cm = ListedColormap(['white', COLOR])
+        im = plt.imshow(self.U[0], cmap=cm)
+
+        ax = plt.gca()
+        ax.set_xticks(self.Y+0.5)
+        ax.set_yticks(self.X+0.5)
+        ax.axes.xaxis.set_ticklabels([])
+        ax.axes.yaxis.set_ticklabels([])
+        ax.tick_params(axis='x', colors='white')
+        ax.tick_params(axis='y', colors='white')
+
+        plt.grid(color='w', linestyle='-', linewidth=2)
+
+        def animate(i):
+            im.set_array(self.U[i])
+            return [im]
+
+        anim = FuncAnimation(fig, animate, frames=len(self.T), interval=100)
+
+        anim.save(filename)
 
     def step(self):
         self.run(1)
