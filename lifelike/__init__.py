@@ -1,2 +1,2 @@
-from .being import Being
+from .pattern import Pattern
 from .lifelike import Lifelike

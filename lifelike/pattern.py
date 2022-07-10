@@ -3,7 +3,7 @@ import requests
 import re
 
 
-class Being:
+class Pattern:
     def __init__(self, name):
         self.name = name
 

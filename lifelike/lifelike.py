@@ -1,5 +1,5 @@
 import numpy as np
-from lifelike import Being
+from lifelike import Pattern
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -36,24 +36,24 @@ class Lifelike:
 
         return out
 
-    def add_being(self, being, pos, offset=(0,0)):
-        # Chack type: being.
-        if isinstance(being, Being):
+    def add_pattern(self, pattern, pos, offset=(0,0)):
+        # Chack type: pattern.
+        if isinstance(pattern, Pattern):
             pass
-        elif isinstance(being, str):
-            being = Being(being)
+        elif isinstance(pattern, str):
+            pattern = Pattern(pattern)
         else:
             #TODO Raise exception.
-            print('Error: being not instance of Being nor str.')
+            print('Error: pattern not instance of Pattern nor str.')
 
         # Chack type: pos.
         # Definition of x and y.
         positions = {
             'top_left'     : (1, 1),
-            'middle'       : ((self.dim_x - being.U.shape[0]) // 2,
-                              (self.dim_y - being.U.shape[1]) // 2),
-            'bottom_right' : ((self.dim_x - being.U.shape[0]),
-                              (self.dim_y - being.U.shape[1])),
+            'middle'       : ((self.dim_x - pattern.U.shape[0]) // 2,
+                              (self.dim_y - pattern.U.shape[1]) // 2),
+            'bottom_right' : ((self.dim_x - pattern.U.shape[0]),
+                              (self.dim_y - pattern.U.shape[1])),
         }
         if isinstance(pos, tuple) and len(pos) == 2:
             x, y = pos
@@ -72,13 +72,13 @@ class Lifelike:
             print('Error: Bad offset.')
 
         if self.rule == None:
-            self.rule = being.rule
+            self.rule = pattern.rule
 
-        if self.rule == being.rule:
+        if self.rule == pattern.rule:
             if self.dim_t == 0:
-                self.U_0[0][x:x + being.U.shape[0], y:y + being.U.shape[1]] = being.U
+                self.U_0[0][x:x + pattern.U.shape[0], y:y + pattern.U.shape[1]] = pattern.U
             else:
-                self.U[-1][x:x + being.U.shape[0], y:y + being.U.shape[1]] = being.U
+                self.U[-1][x:x + pattern.U.shape[0], y:y + pattern.U.shape[1]] = pattern.U
         else:
             #TODO Raise exception
             print('Error: Rule mismatch.')
@@ -86,7 +86,7 @@ class Lifelike:
     #def random(self):
     #    self.U[0] = np.random.choice([0, 1], (self.dim_x, self.dim_y))
 
-    def viz(self, filename='life.mp4'):
+    def to_file(self, filename='life.mp4'):
         COLOR = 'black'
 
         matplotlib.rcParams['axes.linewidth'] = 4
