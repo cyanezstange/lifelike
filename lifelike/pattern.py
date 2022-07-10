@@ -67,4 +67,10 @@ class Pattern:
         self.U = U
 
     def __repr__(self):
-        return repr(self.U)
+        out = ''
+        for row in self.U:
+            for elem in row:
+                out += '@' if elem==1 else ' '
+            out += '\n'
+
+        return out
